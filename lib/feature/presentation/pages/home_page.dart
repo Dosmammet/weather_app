@@ -9,6 +9,7 @@ import 'package:weather_app/feature/presentation/widgets/weather_daily_list_widg
 
 import '../bloc/city_cubit/city_state.dart';
 
+
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -43,7 +44,7 @@ class HomePage extends StatelessWidget {
         body: TabBarView(
           children: [
           dailyTab(context),
-          dailyTab(context)            
+          hourlyTab(context)            
           ],
         ),
       ),
@@ -55,7 +56,18 @@ Widget dailyTab(BuildContext context){
               child: Column(
                 children: [
                  CityWidget(),
-                  WeatherList(),
+                  WeatherDailyList(hourly: false,),
+                ],
+              ),
+            );
+}
+
+Widget hourlyTab(BuildContext context){
+ return SingleChildScrollView(
+              child: Column(
+                children: [
+                 CityWidget(),
+                  WeatherDailyList(hourly: true,),
                 ],
               ),
             );

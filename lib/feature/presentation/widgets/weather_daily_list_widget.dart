@@ -7,26 +7,14 @@ import 'package:weather_app/feature/presentation/bloc/weather_daily_cubit.dart/w
 import 'package:weather_app/feature/presentation/bloc/weather_daily_cubit.dart/weather_daily_state.dart';
 import 'package:weather_app/feature/presentation/widgets/weather_card_widget.dart';
 
+class WeatherDailyList extends StatelessWidget {
+  final bool hourly;
 
-class WeatherList extends StatelessWidget {
-  final scrollController = ScrollController();
-  int page = -1;
-  void setupScrollController(BuildContext context) {
-    scrollController.addListener(() {
-      if (scrollController.position.atEdge) {
-        if (scrollController.position.pixels != 0) {
-          //BlocProvider.of<WeatherDailyCubit>(context).loadWeather();
-          context.read<WeatherDailyCubit>().loadWeather();
-        }
-      }
-    });
-  }
-
+  const WeatherDailyList({super.key, required this.hourly});
   @override
   Widget build(BuildContext context) {
-    setupScrollController(context);
-
-    return BlocBuilder<WeatherDailyCubit, WeatherDailyState>(builder: (context, state) {
+    return BlocBuilder<WeatherDailyCubit, WeatherDailyState>(
+        builder: (context, state) {
       List<WeatherEntity> weather = [];
       bool isLoading = false;
 
@@ -44,29 +32,52 @@ class WeatherList extends StatelessWidget {
         );
       }
       //return  Text(weather.toString());
-      
-      return ListView.separated(
-       shrinkWrap: true,
-       physics: NeverScrollableScrollPhysics(),
-       // controller: scrollController,
-        itemBuilder: (context, index) {
-          if (index < weather.length) {
-            return WeatherCard(weather: weather[index]);
-          } else {
-            Timer(Duration(milliseconds: 30), () {
-              scrollController
-                  .jumpTo(scrollController.position.maxScrollExtent);
-            });
-            return _loadingIndicator();
-          }
-        },
-        separatorBuilder: (context, index) {
-          return Divider(
-            color: Colors.grey[400],
-          );
-        },
-        itemCount: weather.length + (isLoading ? 1 : 0),
-      );
+
+      return hourly
+          ? ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              // controller: scrollController,
+              itemBuilder: (context, index) {
+                if (index < weather.length) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: WeatherCard(
+                      weather: weather[index],
+                      hourly: hourly,
+                    ),
+                  );
+                } else {
+                  return _loadingIndicator();
+                }
+              },
+              itemCount: weather.length + (isLoading ? 1 : 0),
+            )
+          : ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              // controller: scrollController,
+              itemBuilder: (context, index) {
+                if (index < weather.length) {
+                  if (index > 0 && hourly == false) {
+                    if (weather[index].dtText.toString().substring(0, 10) !=
+                        weather[index - 1].dtText.toString().substring(0, 10)) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: WeatherCard(
+                          weather: weather[index],
+                          hourly: hourly,
+                        ),
+                      );
+                    }
+                  }
+                  return SizedBox();
+                } else {
+                  return _loadingIndicator();
+                }
+              },
+              itemCount: weather.length + (isLoading ? 1 : 0),
+            );
     });
   }
 

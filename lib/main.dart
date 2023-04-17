@@ -10,72 +10,80 @@ import 'package:weather_app/locator_service.dart';
 
 import 'common/app_colors.dart';
 import 'feature/presentation/pages/home_page.dart';
-Future<void> main()async {
-   WidgetsFlutterBinding.ensureInitialized();
-  
+import 'feature/presentation/pages/splash_screen.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
   await EasyLocalization.ensureInitialized();
   await di.init();
   await setLatLong();
-  runApp( EasyLocalization(
-     supportedLocales: [
-          Locale('en', 'US'),
-          Locale('en', 'RU'),
-        ],
-        path: 'assets/translations',
-        fallbackLocale: Locale('en', 'RU'),
-        saveLocale: true,
-    child: MyApp()));
+  runApp(EasyLocalization(
+      supportedLocales: [
+        Locale('en', 'US'),
+        Locale('en', 'RU'),
+      ],
+      path: 'assets/translations',
+      fallbackLocale: Locale('en', 'RU'),
+      saveLocale: true,
+      child: MyApp()));
 }
 
- getLocation()async{
+getLocation() async {
   bool serviceEnabled;
-LocationPermission permission;
+  LocationPermission permission;
 // Test if location services are enabled.
-serviceEnabled = await Geolocator.isLocationServiceEnabled();
-permission = await Geolocator.checkPermission();
-if (permission == LocationPermission.denied) {
+  serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
     permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
       return null;
-        return Future.error('Location permissions are denied');
-      }
+      return Future.error('Location permissions are denied');
     }
-if (permission == LocationPermission.deniedForever) {
- // Permissions are denied forever, handle appropriately.
- return null;
- return Future.error(
-     'Location permissions are permanently denied, we cannot request permissions.');
-}
-return Geolocator.getCurrentPosition(
-    desiredAccuracy: LocationAccuracy.high);
+  }
+  if (permission == LocationPermission.deniedForever) {
+    // Permissions are denied forever, handle appropriately.
+    return null;
+    return Future.error(
+        'Location permissions are permanently denied, we cannot request permissions.');
+  }
+  return Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   await Geolocator.checkPermission();
   await Geolocator.requestPermission();
 
-  Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high);
   print(position);
-  if (position !=null){LAT = position.latitude.toStringAsFixed(2);LON = position.longitude.toStringAsFixed(2);}
-  
+  if (position != null) {
+    LAT = position.latitude.toStringAsFixed(2);
+    LON = position.longitude.toStringAsFixed(2);
+  }
 }
 
-setLatLong()async{
- Position pos =  await getLocation();
- if (pos!=null){
-  LAT = pos.latitude.toStringAsFixed(2);LON = pos.longitude.toStringAsFixed(2);
- }
+setLatLong() async {
+  Position pos = await getLocation();
+  if (pos != null) {
+    LAT = pos.latitude.toStringAsFixed(2);
+    LON = pos.longitude.toStringAsFixed(2);
+  }
 }
+
 String LAT = '44.34';
 String LON = '10.99';
+String langweb = 'en_US';
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    langweb = context.locale == Locale('en', "RU") ? 'ru' : 'en';
     return MultiBlocProvider(
       providers: [
         BlocProvider<WeatherDailyCubit>(
             create: (context) => sl<WeatherDailyCubit>()..loadWeather()),
-        BlocProvider<WeatherHourlyCubit>(
-            create: (context) => sl<WeatherHourlyCubit>()),
-              BlocProvider<CityCubit>(
+        // BlocProvider<WeatherHourlyCubit>(
+        //     create: (context) => sl<WeatherHourlyCubit>()),
+        BlocProvider<CityCubit>(
             create: (context) => sl<CityCubit>()..loadCity()),
       ],
       child: MaterialApp(
@@ -83,12 +91,11 @@ class MyApp extends StatelessWidget {
           backgroundColor: AppColors.mainBackground,
           scaffoldBackgroundColor: AppColors.mainBackground,
         ),
-            localizationsDelegates: context.localizationDelegates,
-            locale: context.locale,
-            supportedLocales: context.supportedLocales,
-        home: HomePage(),
+        localizationsDelegates: context.localizationDelegates,
+        locale: context.locale,
+        supportedLocales: context.supportedLocales,
+        home: SplashScreen(),
       ),
     );
   }
 }
-

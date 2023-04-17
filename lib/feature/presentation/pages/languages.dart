@@ -2,11 +2,14 @@ import 'dart:convert';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:weather_app/feature/presentation/bloc/city_cubit/city_cubit.dart';
+import 'package:weather_app/feature/presentation/bloc/weather_daily_cubit.dart/weather_daily_cubit.dart';
 
 import '../../../main.dart';
+import '../bloc/weather_hourly_cubit/weather_hourly_cubit.dart';
 
 class LanguagePage extends StatefulWidget {
   const LanguagePage({key}) : super(key: key);
@@ -28,7 +31,6 @@ class _LanguagePageState extends State<LanguagePage> {
         appBar: AppBar(
           title: Text(
             'languages'.tr(),
-            style: TextStyle(color: Theme.of(context).primaryColorDark),
           ),
         ),
         body: Column(
@@ -36,37 +38,33 @@ class _LanguagePageState extends State<LanguagePage> {
             ListTile(
               onTap: () {
                 context.locale = Locale('en', "RU");
-      
+                langweb = 'ru';
+                BlocProvider.of<CityCubit>(context).loadCity();
+                BlocProvider.of<WeatherDailyCubit>(context).loadWeather();
+                //BlocProvider.of<WeatherHourlyCubit>(context).loadWeather();
               },
               leading: Icon(
                 Icons.language,
-                color: context.locale.toString() == 'en_RU'
-                    ? Theme.of(context).primaryColor
-                    : Theme.of(context).primaryColorDark,
               ),
               title: Text(
                 'Russian'.tr(),
-                style: TextStyle(
-                    color: context.locale.toString() == 'en_RU'
-                        ? Theme.of(context).primaryColor
-                        : Theme.of(context).primaryColorDark),
+                style: TextStyle(),
               ),
             ),
             ListTile(
               onTap: () {
-                context.locale = Locale('en', "US");
-          
+                langweb = 'en';
+                context.locale = Locale('en', "RU");
+                BlocProvider.of<CityCubit>(context).loadCity();
+                BlocProvider.of<WeatherDailyCubit>(context).loadWeather();
+                //BlocProvider.of<WeatherHourlyCubit>(context).loadWeather();
               },
-              leading: Icon(Icons.language,
-                  color: context.locale.toString() == 'en_US'
-                      ? Theme.of(context).primaryColor
-                      : Theme.of(context).primaryColorDark),
+              leading: Icon(
+                Icons.language,
+              ),
               title: Text(
                 'English'.tr(),
-                style: TextStyle(
-                    color: context.locale.toString() == 'en_US'
-                        ? Theme.of(context).primaryColor
-                        : Theme.of(context).primaryColorDark),
+                style: TextStyle(),
               ),
             ),
           ],

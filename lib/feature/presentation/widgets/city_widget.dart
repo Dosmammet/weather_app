@@ -10,28 +10,23 @@ import 'package:weather_app/feature/presentation/bloc/weather_daily_cubit.dart/w
 import 'package:weather_app/feature/presentation/bloc/weather_daily_cubit.dart/weather_daily_state.dart';
 import 'package:weather_app/feature/presentation/widgets/weather_card_widget.dart';
 
-
 class CityWidget extends StatelessWidget {
   final scrollController = ScrollController();
 
-
-
   @override
   Widget build(BuildContext context) {
-
-
     return BlocBuilder<CityCubit, CityState>(builder: (context, state) {
-
-
       if (state is CityLoading) {
         return _loadingIndicator();
-      }  else if (state is CityLoaded) {
-        return  Padding(
+      } else if (state is CityLoaded) {
+        return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Text('Weather in', style: TextStyle(fontSize: 18),),
-              Text(state.city.name.toString(), style: TextStyle(fontSize: 36),),
+              Text(
+                state.city.name.toString(),
+                style: TextStyle(fontSize: 36),
+              ),
             ],
           ),
         );
@@ -42,7 +37,7 @@ class CityWidget extends StatelessWidget {
         );
       }
       return Text('123');
-      
+
       // ListView.separated(
       //   controller: scrollController,
       //   itemBuilder: (context, index) {
