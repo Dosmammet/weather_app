@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/feature/domain/entities/weather_entity.dart';
 
 import 'package:weather_app/feature/presentation/bloc/weather_daily_cubit.dart/weather_daily_state.dart';
+import 'package:weather_app/main.dart';
 
 
 import '../../../../core/error/failure.dart';
@@ -28,10 +29,10 @@ class WeatherDailyCubit extends Cubit<WeatherDailyState> {
     if (currentState is WeatherDailyLoaded) {
       oldWeather = currentState.weathersList;
     }
-
+    
     emit(WeatherDailyLoading(oldWeather));
 
-    final failureOrWeather = await getDailyWeather(GetDailyWeatherParams(lat: '44.34', long: '10.99'));
+    final failureOrWeather = await getDailyWeather(GetDailyWeatherParams(lat: LAT, long: LON));
 
     failureOrWeather.fold((error) => emit(WeatherDailyError(message: _mapFailureToMessage(error))), (character) {
       final persons = (state as WeatherDailyLoading).oldWeathersList;

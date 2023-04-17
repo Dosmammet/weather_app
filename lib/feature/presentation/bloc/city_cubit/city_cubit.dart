@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:weather_app/feature/domain/usecases/get_city.dart';
 import 'package:weather_app/feature/presentation/bloc/city_cubit/city_state.dart';
+import 'package:weather_app/main.dart';
 
 
 
@@ -28,7 +29,7 @@ class CityCubit extends Cubit<CityState> {
 
     emit(CityLoading());
 
-    final failureOrCity = await getCity(GetCityParams(lat: '44.34', long: '10.99'));
+    final failureOrCity = await getCity(GetCityParams(lat: LAT, long: LON));
 
     failureOrCity.fold((error) => emit(CityError(message: _mapFailureToMessage(error))), (character) {
       emit(CityLoaded(character));

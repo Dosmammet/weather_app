@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_app/feature/domain/entities/weather_entity.dart';
@@ -46,7 +47,7 @@ class WeatherCard extends StatelessWidget {
                     height: 4,
                   ),
                  Text(
-                    'Temperature: ${weather.temp} C',
+                    'Temperature'.tr() +': ${weather.temp} C',
                     style: TextStyle(
                       fontSize: 20,
                       color: Colors.white,
@@ -57,7 +58,7 @@ class WeatherCard extends StatelessWidget {
                     height: 12,
                   ),
                   Text(
-                    'Humidity: ${weather.humidity}',
+                    'Humidity'.tr()+ ': ${weather.humidity}',
                     style: TextStyle(color: Colors.white),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -66,7 +67,7 @@ class WeatherCard extends StatelessWidget {
                     height: 12,
                   ),
                    Text(
-                    'Feels like: ${weather.feelsLike}',
+                    'Feels like'.tr()+': ${weather.feelsLike}',
                     style: TextStyle(color: Colors.white),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
